@@ -9,7 +9,7 @@ on:
 jobs:
   run-tests:
     name: Run tests (backend if present)
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     
     steps:
       - name: Checkout repository
@@ -25,7 +25,7 @@ jobs:
         working-directory: backend
         run: |
           echo "Installing dependencies..."
-          npm install
+          sudo npm install
           echo "Running tests..."
-          npx jest
-        shell: pwsh
+          sudo npm test
+        shell: bash
