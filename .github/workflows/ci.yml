@@ -35,9 +35,13 @@ jobs:
           if [ -f backend/package.json ]; then
             echo "Found backend/package.json — running backend tests"
             cd backend
-            # Install dependencies with npm install instead of npm ci since we don't have package-lock.json yet
+            # Install dependencies
             npm install
-            npm test
+            # Make jest executable and run with node directly
+            chmod +x node_modules/.bin/jest
+            chmod +x node_modules/jest/bin/jest.js
+            node node_modules/jest/bin/jest.js --no-cache --runInBand
           else
             echo "No backend/package.json found — skipping backend tests"
           fi
+        shell: bash
