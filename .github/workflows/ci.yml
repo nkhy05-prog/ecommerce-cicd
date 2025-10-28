@@ -9,13 +9,16 @@ on:
 jobs:
   run-tests:
     name: Run tests (backend if present)
-    runs-on: ubuntu-latest
-    container: 
-      image: node:18
+    runs-on: windows-latest
     
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
 
       - name: Run backend tests
         if: hashFiles('backend/package.json') != ''
@@ -24,5 +27,5 @@ jobs:
           echo "Installing dependencies..."
           npm install
           echo "Running tests..."
-          npm test
-        shell: bash
+          npx jest
+        shell: pwsh
