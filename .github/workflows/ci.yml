@@ -18,30 +18,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-
-      # Only attempt caching if package-lock.json exists
-      - name: Cache node_modules
-        uses: actions/cache@v3
-        if: hashFiles('backend/package-lock.json') != ''
-        with:
-          path: |
-            backend/node_modules
-          key: ${{ runner.os }}-npm-${{ hashFiles('backend/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-
+          cache: none # Disable caching until we have a lock file
 
       - name: Run backend tests (if backend/package.json exists)
+        working-directory: backend
+        if: hashFiles('backend/package.json') != ''
         run: |
-          if [ -f backend/package.json ]; then
-            echo "Found backend/package.json — running backend tests"
-            cd backend
-            # Install dependencies
-            npm install
-            # Make jest executable and run with node directly
-            chmod +x node_modules/.bin/jest
-            chmod +x node_modules/jest/bin/jest.js
-            node node_modules/jest/bin/jest.js --no-cache --runInBand
-          else
-            echo "No backend/package.json found — skipping backend tests"
-          fi
+          echo "Installing dependencies..."
+          npm install
+          echo "Running tests..."
+          npm test
         shell: bash
