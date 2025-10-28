@@ -25,6 +25,8 @@ jobs:
         run: |
           echo "Installing dependencies..."
           npm install
+          echo "Installing Jest globally..."
+          npm install -g jest
           echo "Running tests..."
-          npm test
+          /usr/local/bin/jest --ci --detectOpenHandles
         shell: bash
