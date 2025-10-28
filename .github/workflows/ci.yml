@@ -18,15 +18,26 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'npm'
+
+      # Only attempt caching if package-lock.json exists
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        if: hashFiles('backend/package-lock.json') != ''
+        with:
+          path: |
+            backend/node_modules
+          key: ${{ runner.os }}-npm-${{ hashFiles('backend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
 
       - name: Run backend tests (if backend/package.json exists)
         run: |
           if [ -f backend/package.json ]; then
             echo "Found backend/package.json — running backend tests"
             cd backend
-            npm ci
-            npm test --silent
+            # Install dependencies with npm install instead of npm ci since we don't have package-lock.json yet
+            npm install
+            npm test
           else
             echo "No backend/package.json found — skipping backend tests"
           fi
