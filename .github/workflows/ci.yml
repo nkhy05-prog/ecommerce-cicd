@@ -10,21 +10,19 @@ jobs:
   run-tests:
     name: Run tests (backend if present)
     runs-on: ubuntu-latest
+    container: 
+      image: node:18
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: Run backend tests (if backend/package.json exists)
-        working-directory: backend
+      - name: Run backend tests
         if: hashFiles('backend/package.json') != ''
+        working-directory: backend
         run: |
           echo "Installing dependencies..."
           npm install
-          echo "Running tests with node directly..."
-          node ./node_modules/jest/bin/jest.js --ci --detectOpenHandles --forceExit
+          echo "Running tests..."
+          npm test
         shell: bash
