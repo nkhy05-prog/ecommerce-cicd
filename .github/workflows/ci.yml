@@ -25,6 +25,6 @@ jobs:
         run: |
           echo "Installing dependencies..."
           npm install
-          echo "Running tests with npx..."
-          npx --no-install jest --ci --detectOpenHandles --forceExit
+          echo "Running tests with node directly..."
+          node ./node_modules/jest/bin/jest.js --ci --detectOpenHandles --forceExit
         shell: bash
