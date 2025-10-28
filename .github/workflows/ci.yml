@@ -1,0 +1,32 @@
+name: CI - Run tests
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  run-tests:
+    name: Run tests (backend if present)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Run backend tests (if backend/package.json exists)
+        run: |
+          if [ -f backend/package.json ]; then
+            echo "Found backend/package.json — running backend tests"
+            cd backend
+            npm ci
+            npm test --silent
+          else
+            echo "No backend/package.json found — skipping backend tests"
+          fi
